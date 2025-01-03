@@ -4,25 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Chat Demo</title>
+    <title>Chat Demo</title>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <style>
         body {
             margin: 0;
+            overflow-x: hidden;
         }
 
         .left-slide {
-            background-color: rgba(148, 97, 251);
+            background-color: rgba(148, 97, 251, 0.9);
             position: fixed;
             right: 0;
             top: 0;
-            height: 100%;
+            height: 100vh;
             width: 100%;
-            max-width: 300px;
-            box-shadow: 0 0 10px 0 black;
+            max-width: 400px;
+            box-shadow: 0px 0px 10px 0px black;
+            z-index: 2;
+            overflow-y: auto;
         }
 
         .warn {
@@ -46,21 +51,14 @@
             }
         }
 
-        .chat-input {
-            background-color: rgb(148, 97, 251);
-            height: 60px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+        .chat-container {
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
         }
 
-        @media (max-width: 768px) {
-            .left-slide {
-                position: relative;
-                height: auto;
-                max-width: none;
-                width: 100%;
-            }
+        .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
         }
     </style>
 </head>
@@ -69,59 +67,56 @@
     <main class="container-fluid">
         <div class="row">
             <!-- Chat Section -->
-            <div class="col-lg-9 col-md-8 col-sm-12">
-                <%if(id.length==0){%>
+            <div class="col-lg-9 col-md-8 col-sm-12 text-end chat-container">
+                <% if (id.length == 0) { %>
                 <div class="alert alert-warning m-3 text-center">
-                    <strong>Login first to see chats</strong>
+                    <font class="fw-bold">Login first to see chats</font>
                 </div>
-                <%}else{%>
-                <%for(let i=0;i<chatdata.length;i++){%>
-                <%if(chatdata[i].uid==id){%>
+                <% } else { %>
+                <% for (let i = 0; i < chatdata.length; i++) { %>
+                <% if (chatdata[i].uid == id) { %>
                 <div class="row p-2">
                     <div class="col-12">
                         <div class="p-2 bg-primary rounded-pill shadow text-light float-end" data-aos="zoom-in-left">
-                            <%-chatdata[i].message%>
+                            <%- chatdata[i].message %>
                         </div>
                         <div class="float-end" style="clear: right;" data-aos="zoom-in-left">
-                            <small class="text-secondary"><%-chatdata[i].time%></small>
+                            <font style="font-size: 12px;" class="fw-lighter text-secondary"><%- chatdata[i].time %></font>
                         </div>
                     </div>
                 </div>
-                <%}else{%>
+                <% } else { %>
                 <div class="row p-2">
                     <div class="col-12">
                         <div class="p-2 bg-secondary rounded-pill shadow text-light float-start" data-aos="zoom-in-right">
-                            <%-chatdata[i].message%>
+                            <%- chatdata[i].message %>
                         </div>
                         <div class="float-start" style="clear: left;" data-aos="zoom-in-right">
-                            <small class="text-secondary"><%-chatdata[i].time%></small>
+                            <font style="font-size: 12px;" class="fw-lighter text-secondary"><%- chatdata[i].time %></font>
                         </div>
                     </div>
                 </div>
-                <%}%>
-                <%}%>
-                <%}%>
-
-                <!-- Input Box -->
-                <div class="chat-input">
-                    <div class="container">
-                        <form action="/chat?id=<%-id%>" method="post" class="row g-2">
-                            <div class="col-10">
-                                <input type="text" class="form-control shadow rounded-pill" name="message" placeholder="Type your message here..." required>
-                            </div>
-                            <div class="col-2">
-                                <%if(id.length!=0){%>
-                                <button type="submit" class="btn btn-primary rounded-pill shadow w-100">Send</button>
-                                <%}else{%>
-                                <button type="submit" class="btn btn-primary rounded-pill shadow w-100" disabled>Send</button>
-                                <%}%>
-                            </div>
+                <% } %>
+                <% } %>
+                <% } %>
+                <div class="row p-2">
+                    <div class="col-12" style="height: 50px;" id="b"></div>
+                </div>
+                <div class="row">
+                    <div class="col-12" style="background-color: rgb(148, 97, 251); height: 60px; position: fixed; bottom: 0px;">
+                        <form action="/chat?id=<%- id %>" method="post" class="d-flex justify-content-between align-items-center">
+                            <input type="text" class="form-control shadow rounded-pill mx-2" name="message" placeholder="Type your message here...">
+                            <% if (id.length != 0) { %>
+                            <button type="submit" class="btn btn-primary rounded-pill shadow">Send</button>
+                            <% } else { %>
+                            <button type="submit" class="btn btn-primary rounded-pill shadow" disabled>Send</button>
+                            <% } %>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <!-- Login Sidebar -->
+            <!-- Login Section -->
             <div class="col-lg-3 col-md-4 col-sm-12 left-slide">
                 <div class="text-center text-light m-3">
                     <h2>Login</h2>
@@ -129,24 +124,21 @@
                 <div class="m-3 p-3">
                     <form action="/login" method="post">
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" name="email" id="loginEmail" placeholder="name@example.com" required>
-                            <label for="loginEmail">Email address</label>
+                            <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@example.com">
+                            <label for="floatingInput">Email address</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" name="password" id="loginPassword" placeholder="Password" required>
-                            <label for="loginPassword">Password</label>
+                            <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password">
+                            <label for="floatingPassword">Password</label>
                         </div>
-                        <%if(id.length!=0){%>
-                        <button type="submit" class="btn btn-primary shadow btn-sm" disabled>Login</button>
-                        <%}else{%>
-                        <button type="submit" class="btn btn-primary shadow btn-sm">Login</button>
-                        <%}%>
+                        <button type="submit" class="btn btn-primary shadow btn-sm w-100 mb-3" <% if (id.length != 0) { %>disabled<% } %>>Login</button>
+                        <div class="text-center">OR</div>
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Create New Account
+                            </button>
+                        </div>
                     </form>
-                    <%if(warn=="warn"){%>
-                    <div class="alert alert-danger warn mt-3 text-center">
-                        <strong>This Details is already in use</strong>
-                    </div>
-                    <%}%>
                 </div>
             </div>
         </div>
@@ -154,28 +146,28 @@
 
     <!-- Signup Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Create New Account</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body overflow-auto">
                     <form action="/signup" method="post">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="name" id="signupName" placeholder="Your Name" required>
+                            <input type="text" class="form-control" name="name" id="signupName" placeholder="Your Name">
                             <label for="signupName">Your Name</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" name="email" id="signupEmail" placeholder="name@example.com" required>
+                            <input type="email" class="form-control" name="email" id="signupEmail" placeholder="name@example.com">
                             <label for="signupEmail">Email address</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="number" id="signupNumber" placeholder="Contact Number" required>
+                            <input type="number" class="form-control" name="number" id="signupNumber" placeholder="Contact Number">
                             <label for="signupNumber">Contact Number</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" name="password" id="signupPassword" placeholder="Set Password" required>
+                            <input type="password" class="form-control" name="password" id="signupPassword" placeholder="Set Password">
                             <label for="signupPassword">Set Password</label>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Sign Up</button>
@@ -184,7 +176,6 @@
             </div>
         </div>
     </div>
-
     <script>
         AOS.init();
     </script>
