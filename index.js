@@ -4,7 +4,7 @@ let bodyparser=require('body-parser');
 let mysql=require('mysql');
 let util=require('util');
 let con=mysql.createConnection({
-    host:'bzhptgetmvbsrp4i6jca-mysql.services.clever-cloud.com',
+    host:"bzhptgetmvbsrp4i6jca-mysql.services.clever-cloud.com",
     user:"uljrzl4t3vxvmyw2",
     password:"6psLgCNLNyZWxtaYtsLD",
     database:"bzhptgetmvbsrp4i6jca"
